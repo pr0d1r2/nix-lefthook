@@ -14,7 +14,7 @@ setup() {
 @test "built binary reports correct version" {
     run "$LEFTHOOK" version
     assert_success
-    assert_output --partial "2.1.6"
+    assert_output --partial "2.1.8"
 }
 
 @test "built binary --help exits successfully" {

@@ -27,7 +27,7 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      version = "2.1.6";
+      version = "2.1.8";
 
       lefthookFor =
         pkgs:
@@ -39,10 +39,10 @@
             owner = "evilmartians";
             repo = "lefthook";
             rev = "v${version}";
-            hash = "sha256-thMjOtAAWrKvQDUlJmnvT1QT2CDx42XKlzV+weFsFrA=";
+            hash = "sha256-ZCdDRJw59M/Uy0/z2fsNc/KRQx0ZXANOe1UFJZE7ffQ=";
           };
 
-          vendorHash = "sha256-75jrXoBXoPCE/Ue7OlGAA4nUDXHM5ccIaK4rsKgfG84=";
+          vendorHash = "sha256-jVjdGnNRRFTjd2/DjKHZmLWkbtb3eEQ+R/yw1LBa3bE=";
 
           ldflags = [
             "-s"
