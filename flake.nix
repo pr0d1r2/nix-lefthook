@@ -16,6 +16,10 @@
       url = "github:pr0d1r2/nix-lefthook-taplo";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-lefthook-markdownlint-agentic = {
+      url = "github:pr0d1r2/nix-lefthook-markdownlint-agentic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -23,6 +27,7 @@
       nixpkgs,
       nix-dev-shell-agentic,
       nix-lefthook-taplo,
+      nix-lefthook-markdownlint-agentic,
       ...
     }@inputs:
     let
@@ -95,6 +100,7 @@
             pkgs = overlaidPkgs;
             inherit inputs;
             ciPackages = [
+              nix-lefthook-markdownlint-agentic.packages.${system}.default
               nix-lefthook-taplo.packages.${system}.default
             ];
             shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${shells.batsWithLibs}" ] (
