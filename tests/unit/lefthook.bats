@@ -4,7 +4,10 @@ setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
-    LEFTHOOK="$(nix build --no-link --print-out-paths 2>/dev/null)/bin/lefthook"
+    LEFTHOOK="$(nix build --no-link --print-out-paths 2>/dev/null || true)/bin/lefthook"
+    if [ ! -x "$LEFTHOOK" ]; then
+        LEFTHOOK="$(command -v lefthook)"
+    fi
 }
 
 @test "nix build produces lefthook binary" {
