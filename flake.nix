@@ -16,7 +16,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       nix-dev-shell-agentic,
       ...
@@ -28,14 +27,11 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      forAllSystems =
-        f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
-
       version = "2.1.6";
-    in
-    {
-      packages = forAllSystems (pkgs: {
-        default = pkgs.buildGo126Module {
+
+      lefthookFor =
+        pkgs:
+        pkgs.buildGo126Module {
           pname = "lefthook";
           inherit version;
 
@@ -63,17 +59,36 @@
             mainProgram = "lefthook";
           };
         };
+
+      lefthookOverlay = _final: _prev: {
+        lefthook = lefthookFor _prev;
+      };
+
+      forAllSystems =
+        f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+
+      pkgsWithOverlay =
+        system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ lefthookOverlay ];
+        };
+    in
+    {
+      packages = forAllSystems (pkgs: {
+        default = lefthookFor pkgs;
       });
+
+      overlays.default = lefthookOverlay;
 
       devShells = forAllSystems (
         pkgs:
         let
           inherit (pkgs.stdenv.hostPlatform) system;
+          overlaidPkgs = pkgsWithOverlay system;
           shells = nix-dev-shell-agentic.lib.mkShells {
-            inherit pkgs inputs;
-            ciPackages = [
-              self.packages.${system}.default
-            ];
+            pkgs = overlaidPkgs;
+            inherit inputs;
             shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${shells.batsWithLibs}" ] (
               builtins.readFile ./dev.sh
             );
