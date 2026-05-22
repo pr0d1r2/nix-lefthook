@@ -3,20 +3,21 @@
 setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
+
+    LEFTHOOK="$(nix build --no-link --print-out-paths 2>/dev/null)/bin/lefthook"
 }
 
-@test "lefthook binary is on PATH" {
-    run command -v lefthook
-    assert_success
+@test "nix build produces lefthook binary" {
+    assert [ -x "$LEFTHOOK" ]
 }
 
-@test "lefthook reports correct version" {
-    run lefthook version
+@test "built binary reports correct version" {
+    run "$LEFTHOOK" version
     assert_success
     assert_output --partial "2.1.6"
 }
 
-@test "lefthook --help exits successfully" {
-    run lefthook --help
+@test "built binary --help exits successfully" {
+    run "$LEFTHOOK" --help
     assert_success
 }
