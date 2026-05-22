@@ -4,9 +4,8 @@ setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
-    if command -v nix >/dev/null 2>&1; then
-        LEFTHOOK="$(nix build --no-link --print-out-paths 2>/dev/null)/bin/lefthook"
-    else
+    LEFTHOOK="$(nix build --no-link --print-out-paths 2>/dev/null)/bin/lefthook"
+    if [ ! -x "$LEFTHOOK" ]; then
         LEFTHOOK="$(command -v lefthook)"
     fi
 }
