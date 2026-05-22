@@ -6,11 +6,11 @@
 
 Pinned [lefthook](https://github.com/evilmartians/lefthook) binary packaged as a Nix flake. Single source of truth for lefthook version across all repos.
 
-**Current version:** 2.1.6
+**Current version:** 2.1.8
 
 ## Why
 
-nixpkgs ships lefthook 1.13.6 on nixos-25.11. This flake builds 2.1.6 from source using `buildGo126Module`, independent of nixpkgs packaging. All repos consume this flake input to stay on the same version.
+nixpkgs ships lefthook 1.13.6 on nixos-25.11. This flake builds 2.1.8 from source using `buildGo126Module`, independent of nixpkgs packaging. All repos consume this flake input to stay on the same version.
 
 ## Usage
 
