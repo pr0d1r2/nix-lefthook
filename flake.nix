@@ -12,12 +12,17 @@
       url = "github:pr0d1r2/nix-dev-shell-agentic";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-lefthook-taplo = {
+      url = "github:pr0d1r2/nix-lefthook-taplo";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
       nixpkgs,
       nix-dev-shell-agentic,
+      nix-lefthook-taplo,
       ...
     }@inputs:
     let
@@ -89,6 +94,9 @@
           shells = nix-dev-shell-agentic.lib.mkShells {
             pkgs = overlaidPkgs;
             inherit inputs;
+            ciPackages = [
+              nix-lefthook-taplo.packages.${system}.default
+            ];
             shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${shells.batsWithLibs}" ] (
               builtins.readFile ./dev.sh
             );
