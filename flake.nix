@@ -8,10 +8,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nix-dev-shell-agentic = {
-      url = "github:pr0d1r2/nix-dev-shell-agentic";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-lefthook-taplo = {
       url = "github:pr0d1r2/nix-lefthook-taplo";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,11 +21,10 @@
   outputs =
     {
       nixpkgs,
-      nix-dev-shell-agentic,
       nix-lefthook-taplo,
       nix-lefthook-markdownlint-agentic,
       ...
-    }@inputs:
+    }:
     let
       supportedSystems = [
         "aarch64-darwin"
@@ -77,12 +72,13 @@
       forAllSystems =
         f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
 
-      pkgsWithOverlay =
-        system:
-        import nixpkgs {
-          inherit system;
-          overlays = [ lefthookOverlay ];
-        };
+      batsWithLibsFor =
+        pkgs:
+        pkgs.bats.withLibraries (p: [
+          p.bats-support
+          p.bats-assert
+          p.bats-file
+        ]);
     in
     {
       packages = forAllSystems (pkgs: {
@@ -95,20 +91,44 @@
         pkgs:
         let
           inherit (pkgs.stdenv.hostPlatform) system;
-          overlaidPkgs = pkgsWithOverlay system;
-          shells = nix-dev-shell-agentic.lib.mkShells {
-            pkgs = overlaidPkgs;
-            inherit inputs;
-            ciPackages = [
-              nix-lefthook-markdownlint-agentic.packages.${system}.default
-              nix-lefthook-taplo.packages.${system}.default
+          batsWithLibs = batsWithLibsFor pkgs;
+          ciPackages = [
+            (lefthookFor pkgs)
+            pkgs.coreutils
+            pkgs.deadnix
+            pkgs.editorconfig-checker
+            pkgs.git
+            pkgs.gitleaks
+            pkgs.nix
+            pkgs.nixfmt
+            pkgs.parallel
+            pkgs.shellcheck
+            pkgs.shfmt
+            pkgs.statix
+            pkgs.typos
+            pkgs.yamllint
+            pkgs.markdownlint-cli
+            nix-lefthook-taplo.packages.${system}.default
+            nix-lefthook-markdownlint-agentic.packages.${system}.default
+            batsWithLibs
+          ];
+        in
+        {
+          ci = pkgs.mkShell {
+            packages = ciPackages;
+            BATS_LIB_PATH = "${batsWithLibs}/share/bats";
+          };
+          default = pkgs.mkShell {
+            packages = ciPackages ++ [
+              pkgs.gh
+              pkgs.nodejs
             ];
-            shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${shells.batsWithLibs}" ] (
+            BATS_LIB_PATH = "${batsWithLibs}/share/bats";
+            shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${batsWithLibs}" ] (
               builtins.readFile ./dev.sh
             );
           };
-        in
-        shells
+        }
       );
     };
 }
