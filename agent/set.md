@@ -13,6 +13,7 @@
 @./set/skills/lefthook/sh.md
 @./set/skills/lefthook/tdd.md
 @./set/skills/lefthook/timeout.md
+@./set/skills/lefthook/output.md
 @./set/skills/direnv.md
 @./set/skills/tdd.md
 @./set/skills/test/coverage.md

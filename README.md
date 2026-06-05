@@ -29,6 +29,17 @@ Add to your devShell:
 nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.default
 ```
 
+## Recommended lefthook.yml config
+
+Configure lefthook to only show output on failure:
+
+```yaml
+output:
+  - failure
+```
+
+This keeps git hooks silent on success. Developers only see output when something breaks.
+
 ## Updating lefthook version
 
 Edit `flake.nix` — update `version`, `hash`, and `vendorHash`:
