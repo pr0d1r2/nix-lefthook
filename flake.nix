@@ -8,9 +8,9 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nix-lefthook-taplo = {
+    nix-lefthook-taplo-src = {
       url = "github:pr0d1r2/nix-lefthook-taplo";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     nix-lefthook-markdownlint-agentic-src = {
       url = "github:pr0d1r2/nix-lefthook-markdownlint-agentic";
@@ -77,7 +77,7 @@
   outputs =
     {
       nixpkgs,
-      nix-lefthook-taplo,
+      nix-lefthook-taplo-src,
       nix-lefthook-markdownlint-agentic-src,
       nix-lefthook-git-conflict-markers-src,
       nix-lefthook-git-no-local-paths-src,
@@ -214,6 +214,9 @@
           (wrap "lefthook-markdownlint-agentic" nix-lefthook-markdownlint-agentic-src {
             runtimeInputs = [ pkgs.markdownlint-cli ];
           })
+          (wrap "lefthook-taplo" nix-lefthook-taplo-src {
+            runtimeInputs = [ pkgs.taplo ];
+          })
         ];
     in
     {
@@ -226,7 +229,6 @@
       devShells = forAllSystems (
         pkgs:
         let
-          inherit (pkgs.stdenv.hostPlatform) system;
           batsWithLibs = batsWithLibsFor pkgs;
           ciPackages = [
             (lefthookFor pkgs)
@@ -244,7 +246,7 @@
             pkgs.typos
             pkgs.yamllint
             pkgs.markdownlint-cli
-            nix-lefthook-taplo.packages.${system}.default
+            pkgs.taplo
             batsWithLibs
           ]
           ++ (lefthookWrappersFor pkgs);
