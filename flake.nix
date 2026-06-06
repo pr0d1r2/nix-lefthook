@@ -12,9 +12,9 @@
       url = "github:pr0d1r2/nix-lefthook-taplo";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-lefthook-markdownlint-agentic = {
+    nix-lefthook-markdownlint-agentic-src = {
       url = "github:pr0d1r2/nix-lefthook-markdownlint-agentic";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     nix-lefthook-git-conflict-markers-src = {
       url = "github:pr0d1r2/nix-lefthook-git-conflict-markers";
@@ -78,7 +78,7 @@
     {
       nixpkgs,
       nix-lefthook-taplo,
-      nix-lefthook-markdownlint-agentic,
+      nix-lefthook-markdownlint-agentic-src,
       nix-lefthook-git-conflict-markers-src,
       nix-lefthook-git-no-local-paths-src,
       nix-lefthook-missing-final-newline-src,
@@ -211,6 +211,9 @@
               pkgs.coreutils
             ];
           })
+          (wrap "lefthook-markdownlint-agentic" nix-lefthook-markdownlint-agentic-src {
+            runtimeInputs = [ pkgs.markdownlint-cli ];
+          })
         ];
     in
     {
@@ -242,7 +245,6 @@
             pkgs.yamllint
             pkgs.markdownlint-cli
             nix-lefthook-taplo.packages.${system}.default
-            nix-lefthook-markdownlint-agentic.packages.${system}.default
             batsWithLibs
           ]
           ++ (lefthookWrappersFor pkgs);
