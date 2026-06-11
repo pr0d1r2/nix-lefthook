@@ -163,11 +163,11 @@
     "nix-lefthook-shfmt-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1778738820,
-        "narHash": "sha256-Z7483LVcqNMdk4M7S7E2avjNM+eAF8tOvlt1gP3FzPA=",
+        "lastModified": 1781204827,
+        "narHash": "sha256-83xcfKO4arX5Q2g7G9dpZB20VQMxoRXXryuIi+WSIbo=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-shfmt",
-        "rev": "b713a38e7fd53f006b2bcc9bd21b23db2602791a",
+        "rev": "0ef15927ee16ec79649d8d81d2a13a8ca6163a85",
         "type": "github"
       },
       "original": {
