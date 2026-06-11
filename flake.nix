@@ -69,6 +69,10 @@
       url = "github:pr0d1r2/nix-lefthook-yamllint";
       flake = false;
     };
+    nix-lefthook-bats-unit-src = {
+      url = "github:pr0d1r2/nix-lefthook-bats-unit";
+      flake = false;
+    };
     nix-lefthook-gitleaks-src = {
       url = "github:pr0d1r2/nix-lefthook-gitleaks";
       flake = false;
@@ -93,6 +97,7 @@
       nix-lefthook-shfmt-src,
       nix-lefthook-typos-src,
       nix-lefthook-yamllint-src,
+      nix-lefthook-bats-unit-src,
       nix-lefthook-gitleaks-src,
       ...
     }:
@@ -217,6 +222,12 @@
           })
           (wrap "lefthook-taplo" nix-lefthook-taplo-src {
             runtimeInputs = [ pkgs.taplo ];
+          })
+          (wrap "lefthook-bats-unit" nix-lefthook-bats-unit-src {
+            runtimeInputs = [
+              (batsWithLibsFor pkgs)
+              pkgs.coreutils
+            ];
           })
         ];
     in
