@@ -256,19 +256,14 @@
           getFileSizeLimit = pkgs.writeShellApplication {
             name = "get-file-size-limit";
             runtimeInputs = [
-              pkgs.gnugrep
               pkgs.gawk
+              pkgs.gnugrep
             ];
             text = builtins.readFile "${nix-lefthook-file-size-check-src}/get-file-size-limit.sh";
           };
-          narrowLanguageInputs = [
-            pkgs.gawk
-            pkgs.coreutils
-            pkgs.diffutils
-            pkgs.git
-            pkgs.gnugrep
-            pkgs.gnused
-          ];
+          linterCoverageAwk = pkgs.writeText "linter-coverage.awk" (
+            builtins.readFile "${nix-lefthook-linter-coverage-full-src}/linter-coverage.awk"
+          );
         in
         [
           (wrap "lefthook-git-conflict-markers" nix-lefthook-git-conflict-markers-src {
@@ -361,43 +356,68 @@
           })
           (wrap "lefthook-file-size-check" nix-lefthook-file-size-check-src {
             runtimeInputs = [
+              pkgs.gawk
+              pkgs.gnugrep
+              pkgs.coreutils
               getFileSizeLimit
-              pkgs.coreutils
             ];
           })
-          (wrap "lefthook-justfile-alphabetical" nix-lefthook-justfile-alphabetical-src {
+          (pkgs.writeShellApplication {
+            name = "lefthook-justfile-alphabetical";
             runtimeInputs = [
-              pkgs.just
               pkgs.gawk
               pkgs.coreutils
             ];
+            text = ''
+              AWK_PROGRAM="${nix-lefthook-justfile-alphabetical-src}/justfile-alphabetical.awk"
+            ''
+            + builtins.readFile "${nix-lefthook-justfile-alphabetical-src}/lefthook-justfile-alphabetical.sh";
           })
-          (wrap "lefthook-justfile-no-embedded-shell" nix-lefthook-justfile-no-embedded-shell-src {
+          (wrap "lefthook-justfile-no-embedded-shell" nix-lefthook-justfile-no-embedded-shell-src { })
+          (pkgs.writeShellApplication {
+            name = "lefthook-linter-coverage-full";
             runtimeInputs = [
-              pkgs.just
-              (batsWithLibsFor pkgs)
-            ];
-          })
-          (wrap "lefthook-linter-coverage-full" nix-lefthook-linter-coverage-full-src {
-            runtimeInputs = [
-              pkgs.findutils
-              pkgs.gawk
               pkgs.git
+              pkgs.gawk
               pkgs.gnused
-              pkgs.coreutils
             ];
+            text =
+              builtins.replaceStrings [ "LEFTHOOK_LINTER_COVERAGE_AWK_PROGRAM_PATH" ] [ "${linterCoverageAwk}" ]
+                (builtins.readFile "${nix-lefthook-linter-coverage-full-src}/lefthook-linter-coverage-full.sh");
           })
           (wrap "lefthook-narrow-language" nix-lefthook-narrow-language-src {
-            runtimeInputs = narrowLanguageInputs;
+            runtimeInputs = [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.gawk
+            ];
           })
           (wrap "lefthook-narrow-language-compact" nix-lefthook-narrow-language-src {
-            runtimeInputs = narrowLanguageInputs;
+            runtimeInputs = [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.gawk
+              pkgs.git
+            ];
           })
           (wrap "lefthook-narrow-language-freeze" nix-lefthook-narrow-language-src {
-            runtimeInputs = narrowLanguageInputs;
+            runtimeInputs = [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.git
+            ];
           })
           (wrap "lefthook-narrow-language-suggest" nix-lefthook-narrow-language-src {
-            runtimeInputs = narrowLanguageInputs;
+            runtimeInputs = [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.gawk
+              pkgs.wordnet
+            ];
           })
           (wrap "lefthook-nix-flake-check" nix-lefthook-nix-flake-check-src {
             runtimeInputs = [ pkgs.nix ];
@@ -408,9 +428,7 @@
               pkgs.coreutils
             ];
           })
-          (wrap "lefthook-no-shell-functions" nix-lefthook-no-shell-functions-src {
-            runtimeInputs = [ (batsWithLibsFor pkgs) ];
-          })
+          (wrap "lefthook-no-shell-functions" nix-lefthook-no-shell-functions-src { })
           (wrap "lefthook-pre-rebase-merged-commits" nix-lefthook-pre-rebase-merged-commits-src {
             runtimeInputs = [
               pkgs.git
@@ -438,16 +456,17 @@
           (wrap "lefthook-unicode-lint" nix-lefthook-unicode-lint-src {
             runtimeInputs = [
               pkgs.gnugrep
+              pkgs.libiconv
               pkgs.python3
-              pkgs.coreutils
+              pkgs.perl
             ];
           })
           (wrap "lefthook-unit-coverage" nix-lefthook-unit-coverage-src {
             runtimeInputs = [
-              pkgs.findutils
               pkgs.git
-              pkgs.gnused
+              pkgs.taplo
               pkgs.coreutils
+              pkgs.findutils
             ];
           })
         ];
