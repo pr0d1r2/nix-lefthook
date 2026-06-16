@@ -77,6 +77,74 @@
       url = "github:pr0d1r2/nix-lefthook-gitleaks";
       flake = false;
     };
+    nix-lefthook-actionlint-src = {
+      url = "github:pr0d1r2/nix-lefthook-actionlint";
+      flake = false;
+    };
+    nix-lefthook-bats-failures-only-src = {
+      url = "github:pr0d1r2/nix-lefthook-bats-failures-only";
+      flake = false;
+    };
+    nix-lefthook-bats-parse-src = {
+      url = "github:pr0d1r2/nix-lefthook-bats-parse";
+      flake = false;
+    };
+    nix-lefthook-changelog-touched-src = {
+      url = "github:pr0d1r2/nix-lefthook-changelog-touched";
+      flake = false;
+    };
+    nix-lefthook-commit-msg-lint-src = {
+      url = "github:pr0d1r2/nix-lefthook-commit-msg-lint";
+      flake = false;
+    };
+    nix-lefthook-file-size-check-src = {
+      url = "github:pr0d1r2/nix-lefthook-file-size-check";
+      flake = false;
+    };
+    nix-lefthook-justfile-alphabetical-src = {
+      url = "github:pr0d1r2/nix-lefthook-justfile-alphabetical";
+      flake = false;
+    };
+    nix-lefthook-justfile-no-embedded-shell-src = {
+      url = "github:pr0d1r2/nix-lefthook-justfile-no-embedded-shell";
+      flake = false;
+    };
+    nix-lefthook-linter-coverage-full-src = {
+      url = "github:pr0d1r2/nix-lefthook-linter-coverage-full";
+      flake = false;
+    };
+    nix-lefthook-narrow-language-src = {
+      url = "github:pr0d1r2/nix-lefthook-narrow-language";
+      flake = false;
+    };
+    nix-lefthook-nix-flake-check-src = {
+      url = "github:pr0d1r2/nix-lefthook-nix-flake-check";
+      flake = false;
+    };
+    nix-lefthook-nix-flake-eval-src = {
+      url = "github:pr0d1r2/nix-lefthook-nix-flake-eval";
+      flake = false;
+    };
+    nix-lefthook-no-shell-functions-src = {
+      url = "github:pr0d1r2/nix-lefthook-no-shell-functions";
+      flake = false;
+    };
+    nix-lefthook-pre-rebase-merged-commits-src = {
+      url = "github:pr0d1r2/nix-lefthook-pre-rebase-merged-commits";
+      flake = false;
+    };
+    nix-lefthook-tdd-order-bats-src = {
+      url = "github:pr0d1r2/nix-lefthook-tdd-order-bats";
+      flake = false;
+    };
+    nix-lefthook-unicode-lint-src = {
+      url = "github:pr0d1r2/nix-lefthook-unicode-lint";
+      flake = false;
+    };
+    nix-lefthook-unit-coverage-src = {
+      url = "github:pr0d1r2/nix-lefthook-unit-coverage";
+      flake = false;
+    };
   };
 
   outputs =
@@ -99,6 +167,23 @@
       nix-lefthook-yamllint-src,
       nix-lefthook-bats-unit-src,
       nix-lefthook-gitleaks-src,
+      nix-lefthook-actionlint-src,
+      nix-lefthook-bats-failures-only-src,
+      nix-lefthook-bats-parse-src,
+      nix-lefthook-changelog-touched-src,
+      nix-lefthook-commit-msg-lint-src,
+      nix-lefthook-file-size-check-src,
+      nix-lefthook-justfile-alphabetical-src,
+      nix-lefthook-justfile-no-embedded-shell-src,
+      nix-lefthook-linter-coverage-full-src,
+      nix-lefthook-narrow-language-src,
+      nix-lefthook-nix-flake-check-src,
+      nix-lefthook-nix-flake-eval-src,
+      nix-lefthook-no-shell-functions-src,
+      nix-lefthook-pre-rebase-merged-commits-src,
+      nix-lefthook-tdd-order-bats-src,
+      nix-lefthook-unicode-lint-src,
+      nix-lefthook-unit-coverage-src,
       ...
     }:
     let
@@ -168,6 +253,22 @@
               }
               // extra
             );
+          getFileSizeLimit = pkgs.writeShellApplication {
+            name = "get-file-size-limit";
+            runtimeInputs = [
+              pkgs.gnugrep
+              pkgs.gawk
+            ];
+            text = builtins.readFile "${nix-lefthook-file-size-check-src}/get-file-size-limit.sh";
+          };
+          narrowLanguageInputs = [
+            pkgs.gawk
+            pkgs.coreutils
+            pkgs.diffutils
+            pkgs.git
+            pkgs.gnugrep
+            pkgs.gnused
+          ];
         in
         [
           (wrap "lefthook-git-conflict-markers" nix-lefthook-git-conflict-markers-src {
@@ -229,12 +330,141 @@
               pkgs.coreutils
             ];
           })
+          (wrap "lefthook-actionlint" nix-lefthook-actionlint-src {
+            runtimeInputs = [ pkgs.actionlint ];
+          })
+          (wrap "lefthook-bats-failures-only" nix-lefthook-bats-failures-only-src {
+            runtimeInputs = [
+              (batsWithLibsFor pkgs)
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-bats-parse" nix-lefthook-bats-parse-src {
+            runtimeInputs = [
+              (batsWithLibsFor pkgs)
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-changelog-touched" nix-lefthook-changelog-touched-src {
+            runtimeInputs = [
+              pkgs.git
+              pkgs.diffutils
+              pkgs.gnugrep
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-commit-msg-lint" nix-lefthook-commit-msg-lint-src {
+            runtimeInputs = [
+              pkgs.gnused
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-file-size-check" nix-lefthook-file-size-check-src {
+            runtimeInputs = [
+              getFileSizeLimit
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-justfile-alphabetical" nix-lefthook-justfile-alphabetical-src {
+            runtimeInputs = [
+              pkgs.just
+              pkgs.gawk
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-justfile-no-embedded-shell" nix-lefthook-justfile-no-embedded-shell-src {
+            runtimeInputs = [
+              pkgs.just
+              (batsWithLibsFor pkgs)
+            ];
+          })
+          (wrap "lefthook-linter-coverage-full" nix-lefthook-linter-coverage-full-src {
+            runtimeInputs = [
+              pkgs.findutils
+              pkgs.gawk
+              pkgs.git
+              pkgs.gnused
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-narrow-language" nix-lefthook-narrow-language-src {
+            runtimeInputs = narrowLanguageInputs;
+          })
+          (wrap "lefthook-narrow-language-compact" nix-lefthook-narrow-language-src {
+            runtimeInputs = narrowLanguageInputs;
+          })
+          (wrap "lefthook-narrow-language-freeze" nix-lefthook-narrow-language-src {
+            runtimeInputs = narrowLanguageInputs;
+          })
+          (wrap "lefthook-narrow-language-suggest" nix-lefthook-narrow-language-src {
+            runtimeInputs = narrowLanguageInputs;
+          })
+          (wrap "lefthook-nix-flake-check" nix-lefthook-nix-flake-check-src {
+            runtimeInputs = [ pkgs.nix ];
+          })
+          (wrap "lefthook-nix-flake-eval" nix-lefthook-nix-flake-eval-src {
+            runtimeInputs = [
+              pkgs.nix
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-no-shell-functions" nix-lefthook-no-shell-functions-src {
+            runtimeInputs = [ (batsWithLibsFor pkgs) ];
+          })
+          (wrap "lefthook-pre-rebase-merged-commits" nix-lefthook-pre-rebase-merged-commits-src {
+            runtimeInputs = [
+              pkgs.git
+              pkgs.gnugrep
+              pkgs.coreutils
+            ];
+          })
+          (pkgs.writeShellApplication {
+            name = "lefthook-tdd-order-bats";
+            runtimeInputs = [
+              pkgs.git
+              pkgs.gnused
+              pkgs.diffutils
+              pkgs.coreutils
+            ];
+            text =
+              builtins.replaceStrings
+                [ "@IS_EXCLUDED_PATH@" "@SPEC_PATH_FOR_FILE@" ]
+                [
+                  "${nix-lefthook-tdd-order-bats-src}/is-excluded-path.sh"
+                  "${nix-lefthook-tdd-order-bats-src}/spec-path-for-file.sh"
+                ]
+                (builtins.readFile "${nix-lefthook-tdd-order-bats-src}/lefthook-tdd-order-bats.sh");
+          })
+          (wrap "lefthook-unicode-lint" nix-lefthook-unicode-lint-src {
+            runtimeInputs = [
+              pkgs.gnugrep
+              pkgs.python3
+              pkgs.coreutils
+            ];
+          })
+          (wrap "lefthook-unit-coverage" nix-lefthook-unit-coverage-src {
+            runtimeInputs = [
+              pkgs.findutils
+              pkgs.git
+              pkgs.gnused
+              pkgs.coreutils
+            ];
+          })
         ];
     in
     {
-      packages = forAllSystems (pkgs: {
-        default = lefthookFor pkgs;
-      });
+      packages = forAllSystems (
+        pkgs:
+        {
+          default = lefthookFor pkgs;
+        }
+        // builtins.listToAttrs (
+          map (w: {
+            name = w.name;
+            value = w;
+          }) (lefthookWrappersFor pkgs)
+        )
+      );
 
       overlays.default = lefthookOverlay;
 
