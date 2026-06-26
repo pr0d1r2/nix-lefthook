@@ -275,11 +275,11 @@
     "nix-lefthook-narrow-language-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1780827599,
-        "narHash": "sha256-/ocrPLAnJ1VoshTO60JnAGTT1F1OgBEF1xG/4SFKYzk=",
+        "lastModified": 1782416798,
+        "narHash": "sha256-vBDkMadnmihjm184UwOQ9wF9pvGGS4LauxSaKu7EPa8=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-narrow-language",
-        "rev": "a03958367e01ea0afd8d3b81b4d58a05e45e5eed",
+        "rev": "7826da5bca1f91521c3f80114cad74261bac3a04",
         "type": "github"
       },
       "original": {
