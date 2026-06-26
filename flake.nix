@@ -419,6 +419,15 @@
               pkgs.wordnet
             ];
           })
+          (wrap "lefthook-narrow-language-add" nix-lefthook-narrow-language-src {
+            runtimeInputs = [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.gawk
+              pkgs.git
+            ];
+          })
           (wrap "lefthook-nix-flake-check" nix-lefthook-nix-flake-check-src {
             runtimeInputs = [ pkgs.nix ];
           })
