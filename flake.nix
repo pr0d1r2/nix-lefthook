@@ -488,7 +488,7 @@
         }
         // builtins.listToAttrs (
           map (w: {
-            name = w.name;
+            inherit (w) name;
             value = w;
           }) (lefthookWrappersFor pkgs)
         )
