@@ -204,13 +204,7 @@
       forAllSystems =
         f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
 
-      batsWithLibsFor =
-        pkgs:
-        pkgs.bats.withLibraries (p: [
-          p.bats-support
-          p.bats-assert
-          p.bats-file
-        ]);
+      batsWithLibsFor = import ./nix/bats-with-libs-for.nix;
 
       lefthookWrappersFor =
         pkgs:
