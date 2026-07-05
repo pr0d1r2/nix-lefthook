@@ -206,6 +206,8 @@
 
       batsWithLibsFor = import ./nix/bats-with-libs-for.nix;
 
+      checksFor = import ./nix/checks-for.nix { inherit lefthookWrappersFor; };
+
       lefthookWrappersFor = import ./nix/lefthook-wrappers-for.nix {
         inherit
           batsWithLibsFor
@@ -259,6 +261,8 @@
           }) (lefthookWrappersFor pkgs)
         )
       );
+
+      checks = forAllSystems checksFor;
 
       overlays.default = lefthookOverlay;
 

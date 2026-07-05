@@ -31,6 +31,7 @@ nix-lefthook is a Nix flake that provides a pinned build of [lefthook](https://g
 | `overlays.default` | Nixpkgs overlay adding `pkgs.lefthook` |
 | `devShells.<system>.default` | Full dev shell (CI tools + gh + nodejs + shellHook) |
 | `devShells.<system>.ci` | CI-only shell (linters + bats, no shellHook) |
+| `checks.<system>.wrappers` | Verify all wrapper scripts are buildable and syntactically valid |
 
 ### Config files
 
@@ -71,7 +72,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T2 | Add `watch_file` entries to `.envrc` for `dev.sh` and nix modules per the direnv skill requirement |
 | `x` | T3 | Add a `CHANGELOG.md` to track version bumps and wrapper additions |
 | `x` | T4 | Extract the `lefthookFor` and `batsWithLibsFor` builders into separate nix files under `nix/` for modularity |
-| `.` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
+| `x` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
 | `.` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
 | `.` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
 | `.` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
