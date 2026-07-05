@@ -31,6 +31,7 @@ nix-lefthook is a Nix flake that provides a pinned build of [lefthook](https://g
 | `overlays.default` | Nixpkgs overlay adding `pkgs.lefthook` |
 | `devShells.<system>.default` | Full dev shell (CI tools + gh + nodejs + shellHook) |
 | `devShells.<system>.ci` | CI-only shell (linters + bats, no shellHook) |
+| `checks.<system>.wrappers` | Verify all wrapper scripts are buildable and syntactically valid |
 
 ### Config files
 
@@ -71,7 +72,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T2 | Add `watch_file` entries to `.envrc` for `dev.sh` and nix modules per the direnv skill requirement |
 | `x` | T3 | Add a `CHANGELOG.md` to track version bumps and wrapper additions |
 | `x` | T4 | Extract the `lefthookFor` and `batsWithLibsFor` builders into separate nix files under `nix/` for modularity |
-| `.` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
+| `x` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
 | `.` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
 | `.` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
 | `.` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
@@ -85,3 +86,6 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 4. **`doCheck = false` in the lefthook build.** Upstream Go tests are skipped; if a patch introduces a regression, it won't be caught at build time.
 5. **flake.nix modularity.** The single `flake.nix` is 542 lines long with all wrapper definitions inline, violating the nix modularity skill's guidance to extract common parts.
 6. **CI action pinned to bare commit SHA** (`fc0c391`) with no version tag comment, making it hard to audit which version is in use.
+7. **CI fails with `fatal: $HOME not set` after T5 added `checks` output.** `nix develop --ignore-environment` strips `$HOME` even when set in the derivation. The CI action's `lefthook install` step runs without `--keep HOME`, causing git to fail. Fixed by adding `shellHook` to the `ci` devShell that sets `HOME` to `/tmp` as fallback when not provided by the outer environment. The previous attempt (`keep-home: "true"`) only affected pre-commit/pre-push steps, not the install step.
+8. **shellcheck SC2016 in `checks_wrappers.bats`.** The grep pattern `'mkdir.*\$out'` intentionally matches the literal `$out` string, but shellcheck flags `\$` inside single quotes as unexpanded. Fixed with `# shellcheck disable=SC2016`.
+9. **bats-parse timeout under parallel execution.** With `parallel: true`, all lefthook hooks run simultaneously. The default 30-second bats-parse timeout is insufficient when competing for CPU with shellcheck (~23s). Fixed by setting `LEFTHOOK_BATS_PARSE_TIMEOUT=120` in the `ci` devShell's `shellHook`.
