@@ -25,6 +25,7 @@ setup() {
 }
 
 @test "nix/checks-wrappers.sh creates output directory" {
+    # shellcheck disable=SC2016
     run grep 'mkdir.*\$out' nix/checks-wrappers.sh
     assert_success
 }

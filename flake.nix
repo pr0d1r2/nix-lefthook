@@ -295,6 +295,10 @@
           ci = pkgs.mkShell {
             packages = ciPackages;
             BATS_LIB_PATH = "${batsWithLibs}/share/bats";
+            shellHook = ''
+              export HOME="''${HOME:-/tmp}"
+              export LEFTHOOK_BATS_PARSE_TIMEOUT="''${LEFTHOOK_BATS_PARSE_TIMEOUT:-120}"
+            '';
           };
           default = pkgs.mkShell {
             packages = ciPackages ++ [
