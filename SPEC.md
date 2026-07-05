@@ -73,7 +73,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T3 | Add a `CHANGELOG.md` to track version bumps and wrapper additions |
 | `x` | T4 | Extract the `lefthookFor` and `batsWithLibsFor` builders into separate nix files under `nix/` for modularity |
 | `x` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
-| `.` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
+| `x` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
 | `.` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
 | `.` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
 | `.` | T9 | Add TOML linter coverage test to verify `taplo` is exercised on `.gitleaks.toml` and `.rtk/filters.toml` |
