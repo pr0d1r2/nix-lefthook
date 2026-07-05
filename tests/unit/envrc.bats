@@ -35,6 +35,16 @@ setup() {
     assert_success
 }
 
+@test ".envrc watches nix/checks-for.nix for changes" {
+    run grep -q '^watch_file nix/checks-for\.nix$' .envrc
+    assert_success
+}
+
+@test ".envrc watches nix/checks-wrappers.sh for changes" {
+    run grep -q '^watch_file nix/checks-wrappers\.sh$' .envrc
+    assert_success
+}
+
 @test ".envrc uses flake" {
     run grep -q '^use flake$' .envrc
     assert_success
