@@ -86,3 +86,4 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 4. **`doCheck = false` in the lefthook build.** Upstream Go tests are skipped; if a patch introduces a regression, it won't be caught at build time.
 5. **flake.nix modularity.** The single `flake.nix` is 542 lines long with all wrapper definitions inline, violating the nix modularity skill's guidance to extract common parts.
 6. **CI action pinned to bare commit SHA** (`fc0c391`) with no version tag comment, making it hard to audit which version is in use.
+7. **CI fails with `fatal: $HOME not set` after T5 added `checks` output.** The `nix-lefthook-nix-flake-check` remote runs `nix flake check` inside `nix develop --ignore-environment` which strips `$HOME`. With the new `checks` output, `nix flake check` must build derivations and fetch flake inputs via git, which fails without `$HOME`. Fixed by passing `keep-home: "true"` to the CI action.
