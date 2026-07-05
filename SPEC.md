@@ -68,7 +68,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T11 | Extract `batsWithLibsFor` builder into `nix/bats-with-libs-for.nix`, import it in `flake.nix`, add `watch_file nix/bats-with-libs-for.nix` to `.envrc` (§V10, §B5) |
 | `x` | T12 | Extract `lefthookWrappersFor` function into `nix/lefthook-wrappers-for.nix`, import it in `flake.nix`, add `watch_file nix/lefthook-wrappers-for.nix` to `.envrc` (§V10, §B5, depends T10+T11) |
 | `x` | T1 | Add bats tests for each wrapped `lefthook-*` script (currently only `lefthook`, `dev`, and `lefthook_yml` have tests) |
-| `.` | T2 | Add `watch_file` entries to `.envrc` for `dev.sh` and nix modules per the direnv skill requirement |
+| `x` | T2 | Add `watch_file` entries to `.envrc` for `dev.sh` and nix modules per the direnv skill requirement |
 | `.` | T3 | Add a `CHANGELOG.md` to track version bumps and wrapper additions |
 | `.` | T4 | Extract the `lefthookFor` and `batsWithLibsFor` builders into separate nix files under `nix/` for modularity |
 | `.` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
