@@ -74,7 +74,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T4 | Extract the `lefthookFor` and `batsWithLibsFor` builders into separate nix files under `nix/` for modularity |
 | `x` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
 | `x` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
-| `.` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
+| `x` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
 | `.` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
 | `.` | T9 | Add TOML linter coverage test to verify `taplo` is exercised on `.gitleaks.toml` and `.rtk/filters.toml` |
 
@@ -89,3 +89,4 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 7. **CI fails with `fatal: $HOME not set` after T5 added `checks` output.** `nix develop --ignore-environment` strips `$HOME` even when set in the derivation. The CI action's `lefthook install` step runs without `--keep HOME`, causing git to fail. Fixed by adding `shellHook` to the `ci` devShell that sets `HOME` to `/tmp` as fallback when not provided by the outer environment. The previous attempt (`keep-home: "true"`) only affected pre-commit/pre-push steps, not the install step.
 8. **shellcheck SC2016 in `checks_wrappers.bats`.** The grep pattern `'mkdir.*\$out'` intentionally matches the literal `$out` string, but shellcheck flags `\$` inside single quotes as unexpanded. Fixed with `# shellcheck disable=SC2016`.
 9. **bats-parse timeout under parallel execution.** With `parallel: true`, all lefthook hooks run simultaneously. The default 30-second bats-parse timeout is insufficient when competing for CPU with shellcheck (~23s). Fixed by setting `LEFTHOOK_BATS_PARSE_TIMEOUT=120` in the `ci` devShell's `shellHook`.
+10. **CI pinned to nonexistent `@v1` tag.** T7 switched `nix-lefthook-ci-action` from a commit SHA to `@v1`, but the action repo has no tags or releases. CI failed with `unable to find version v1`. Fixed by pinning to the latest commit SHA (`ce9a118`) on the action's `main` branch.
