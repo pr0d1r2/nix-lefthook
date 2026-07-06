@@ -75,7 +75,7 @@ lefthook run pre-commit      # Manually trigger pre-commit hooks
 | `x` | T5 | Add a `nix flake check` integration that exercises wrapper scripts on all supported systems |
 | `x` | T6 | Add a version-bump script that automates updating `version`, `hash`, and `vendorHash` in `flake.nix` |
 | `x` | T7 | Pin the `nix-lefthook-ci-action` in CI to a tagged release rather than a commit SHA for readability |
-| `.` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
+| `x` | T8 | Add `pre-commit` and `pre-push` local command blocks to `lefthook.yml` (currently only remotes are configured) |
 | `.` | T9 | Add TOML linter coverage test to verify `taplo` is exercised on `.gitleaks.toml` and `.rtk/filters.toml` |
 
 ## §B — Bugs / Known Issues
