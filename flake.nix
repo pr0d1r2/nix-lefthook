@@ -13,6 +13,10 @@
       url = "github:pr0d1r2/nix-lefthook-taplo";
       flake = false;
     };
+    nix-lefthook-markdownlint-src = {
+      url = "github:pr0d1r2/nix-lefthook-markdownlint";
+      flake = false;
+    };
     nix-lefthook-markdownlint-agentic-src = {
       url = "github:pr0d1r2/nix-lefthook-markdownlint-agentic";
       flake = false;
@@ -151,6 +155,7 @@
     {
       nixpkgs,
       nix-lefthook-taplo-src,
+      nix-lefthook-markdownlint-src,
       nix-lefthook-markdownlint-agentic-src,
       nix-lefthook-git-conflict-markers-src,
       nix-lefthook-git-no-local-paths-src,
@@ -212,6 +217,7 @@
         inherit
           batsWithLibsFor
           nix-lefthook-taplo-src
+          nix-lefthook-markdownlint-src
           nix-lefthook-markdownlint-agentic-src
           nix-lefthook-git-conflict-markers-src
           nix-lefthook-git-no-local-paths-src
