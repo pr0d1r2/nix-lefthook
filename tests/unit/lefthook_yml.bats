@@ -49,3 +49,19 @@ setup() {
     run bash -c "awk '/^pre-push:/,0' lefthook.yml | grep '^      run:' | grep -v '{push_files}' | grep -v 'nix flake check' | wc -l | tr -d ' '"
     assert_output "0"
 }
+
+@test "lefthook.yml excludes are glob lists, not silently-ignored regex strings" {
+    # lefthook 2.x only honours list-of-glob excludes. A bare regex string
+    # like 'exclude: \"^(SPEC)\\.md\$\"' is accepted but silently NOT applied,
+    # leaking the intended-excluded files back into the hook (§B12).
+    run bash -c "grep -nE '^ *exclude: *\"' lefthook.yml | wc -l | tr -d ' '"
+    assert_output "0"
+}
+
+@test "lefthook.yml markdownlint-agentic excludes SPEC.md as a glob list item" {
+    run bash -c "
+        awk '/^    markdownlint-agentic:/{f=1;next} f&&/^    [a-z]/{f=0} f' lefthook.yml \
+            | grep -qE '^ *- +\"?SPEC\.md\"?'
+    "
+    assert_success
+}
