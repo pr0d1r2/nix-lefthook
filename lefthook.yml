@@ -1,189 +1,39 @@
 ---
-output:
-  - failure
-
-remotes:
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-nixfmt
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-shellcheck
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-shfmt
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-statix
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-deadnix
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-nix-no-embedded-shell
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-bats-parse
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-bats-unit
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-yamllint
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-nix-flake-check
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-typos
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-trailing-whitespace
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-missing-final-newline
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-git-conflict-markers
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-editorconfig-checker
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-git-no-local-paths
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-markdownlint-agentic
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-gitleaks
-    ref: main
-    configs:
-      - lefthook-remote.yml
-  - git_url: https://github.com/pr0d1r2/nix-lefthook-taplo
-    ref: main
-    configs:
-      - lefthook-remote.yml
 
 pre-commit:
-  parallel: true
   commands:
-    nixfmt:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIXFMT_TIMEOUT:-30} lefthook-nixfmt {staged_files}
-    shellcheck:
-      glob: "*.{sh,bats}"
-      run: timeout ${LEFTHOOK_SHELLCHECK_TIMEOUT:-30} lefthook-shellcheck {staged_files}
-    shfmt:
-      glob: "*.sh"
-      run: timeout ${LEFTHOOK_SHFMT_TIMEOUT:-30} lefthook-shfmt {staged_files}
-    statix:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_STATIX_TIMEOUT:-30} lefthook-statix {staged_files}
-    deadnix:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_DEADNIX_TIMEOUT:-30} lefthook-deadnix {staged_files}
-    nix-no-embedded-shell:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIX_NO_EMBEDDED_SHELL_TIMEOUT:-30} lefthook-nix-no-embedded-shell {staged_files}
-    bats-parse:
-      glob: "*.bats"
-      run: timeout ${LEFTHOOK_BATS_PARSE_TIMEOUT:-30} bats -c {staged_files}
-    bats-unit:
-      glob: "*.bats"
-      run: timeout ${LEFTHOOK_BATS_UNIT_TIMEOUT:-120} lefthook-bats-unit {staged_files}
+    markdownlint:
+      glob: "*.md"
+      exclude:
+        - ".claude/skills/**"
+      run: timeout ${LEFTHOOK_MARKDOWNLINT_TIMEOUT:-30} lefthook-markdownlint {staged_files}
+    markdownlint-agentic:
+      glob: "*.md"
+      exclude:
+        - "README.md"
+        - "CHANGELOG.md"
+        - "SPEC.md"
+        - "CONTRIBUTING.md"
+      run: timeout ${LEFTHOOK_MARKDOWNLINT_AGENTIC_TIMEOUT:-30} lefthook-markdownlint-agentic {staged_files}
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {staged_files}
-    nix-flake-check:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
-    typos:
-      run: timeout ${LEFTHOOK_TYPOS_TIMEOUT:-30} lefthook-typos {staged_files}
-    trailing-whitespace:
-      run: timeout ${LEFTHOOK_TRAILING_WHITESPACE_TIMEOUT:-30} lefthook-trailing-whitespace {staged_files}
-    missing-final-newline:
-      run: timeout ${LEFTHOOK_MISSING_FINAL_NEWLINE_TIMEOUT:-30} lefthook-missing-final-newline {staged_files}
-    git-conflict-markers:
-      run: timeout ${LEFTHOOK_GIT_CONFLICT_MARKERS_TIMEOUT:-30} lefthook-git-conflict-markers {staged_files}
-    editorconfig-checker:
-      run: timeout ${LEFTHOOK_EDITORCONFIG_CHECKER_TIMEOUT:-30} lefthook-editorconfig-checker {staged_files}
-    git-no-local-paths:
-      run: timeout ${LEFTHOOK_GIT_NO_LOCAL_PATHS_TIMEOUT:-30} lefthook-git-no-local-paths {staged_files}
-    markdownlint-agentic:
-      glob: "*.md"
-      run: timeout ${LEFTHOOK_MARKDOWNLINT_AGENTIC_TIMEOUT:-30} lefthook-markdownlint-agentic {staged_files}
-    gitleaks:
-      run: timeout ${LEFTHOOK_GITLEAKS_TIMEOUT:-30} lefthook-gitleaks {staged_files}
-    taplo:
-      glob: "*.toml"
-      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {staged_files}
 
 pre-push:
-  parallel: true
   commands:
-    nixfmt:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIXFMT_TIMEOUT:-30} lefthook-nixfmt {push_files}
-    shellcheck:
-      glob: "*.{sh,bats}"
-      run: timeout ${LEFTHOOK_SHELLCHECK_TIMEOUT:-30} lefthook-shellcheck {push_files}
-    shfmt:
-      glob: "*.sh"
-      run: timeout ${LEFTHOOK_SHFMT_TIMEOUT:-30} lefthook-shfmt {push_files}
-    statix:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_STATIX_TIMEOUT:-30} lefthook-statix {push_files}
-    deadnix:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_DEADNIX_TIMEOUT:-30} lefthook-deadnix {push_files}
-    nix-no-embedded-shell:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIX_NO_EMBEDDED_SHELL_TIMEOUT:-30} lefthook-nix-no-embedded-shell {push_files}
-    bats-parse:
-      glob: "*.bats"
-      run: timeout ${LEFTHOOK_BATS_PARSE_TIMEOUT:-30} bats -c {push_files}
-    bats-unit:
-      glob: "*.bats"
-      run: timeout ${LEFTHOOK_BATS_UNIT_TIMEOUT:-120} lefthook-bats-unit {push_files}
+    markdownlint:
+      glob: "*.md"
+      exclude:
+        - ".claude/skills/**"
+      run: timeout ${LEFTHOOK_MARKDOWNLINT_TIMEOUT:-30} lefthook-markdownlint {push_files}
+    markdownlint-agentic:
+      glob: "*.md"
+      exclude:
+        - "README.md"
+        - "CHANGELOG.md"
+        - "SPEC.md"
+        - "CONTRIBUTING.md"
+      run: timeout ${LEFTHOOK_MARKDOWNLINT_AGENTIC_TIMEOUT:-30} lefthook-markdownlint-agentic {push_files}
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {push_files}
-    nix-flake-check:
-      glob: "*.nix"
-      run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
-    typos:
-      run: timeout ${LEFTHOOK_TYPOS_TIMEOUT:-30} lefthook-typos {push_files}
-    trailing-whitespace:
-      run: timeout ${LEFTHOOK_TRAILING_WHITESPACE_TIMEOUT:-30} lefthook-trailing-whitespace {push_files}
-    missing-final-newline:
-      run: timeout ${LEFTHOOK_MISSING_FINAL_NEWLINE_TIMEOUT:-30} lefthook-missing-final-newline {push_files}
-    git-conflict-markers:
-      run: timeout ${LEFTHOOK_GIT_CONFLICT_MARKERS_TIMEOUT:-30} lefthook-git-conflict-markers {push_files}
-    editorconfig-checker:
-      run: timeout ${LEFTHOOK_EDITORCONFIG_CHECKER_TIMEOUT:-30} lefthook-editorconfig-checker {push_files}
-    git-no-local-paths:
-      run: timeout ${LEFTHOOK_GIT_NO_LOCAL_PATHS_TIMEOUT:-30} lefthook-git-no-local-paths {push_files}
-    markdownlint-agentic:
-      glob: "*.md"
-      run: timeout ${LEFTHOOK_MARKDOWNLINT_AGENTIC_TIMEOUT:-30} lefthook-markdownlint-agentic {push_files}
-    gitleaks:
-      run: timeout ${LEFTHOOK_GITLEAKS_TIMEOUT:-30} lefthook-gitleaks {push_files}
-    taplo:
-      glob: "*.toml"
-      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {push_files}

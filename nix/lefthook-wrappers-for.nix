@@ -1,6 +1,7 @@
 {
   batsWithLibsFor,
   nix-lefthook-taplo-src,
+  nix-lefthook-markdownlint-src,
   nix-lefthook-markdownlint-agentic-src,
   nix-lefthook-git-conflict-markers-src,
   nix-lefthook-git-no-local-paths-src,
@@ -57,6 +58,10 @@ let
   linterCoverageAwk = pkgs.writeText "linter-coverage.awk" (
     builtins.readFile "${nix-lefthook-linter-coverage-full-src}/linter-coverage.awk"
   );
+  isMarkdownAgentic = pkgs.writeShellApplication {
+    name = "is-markdown-agentic";
+    text = builtins.readFile "${nix-lefthook-markdownlint-src}/is-markdown-agentic.sh";
+  };
 in
 [
   (wrap "lefthook-git-conflict-markers" nix-lefthook-git-conflict-markers-src {
@@ -104,6 +109,12 @@ in
     runtimeInputs = [
       pkgs.gitleaks
       pkgs.coreutils
+    ];
+  })
+  (wrap "lefthook-markdownlint" nix-lefthook-markdownlint-src {
+    runtimeInputs = [
+      pkgs.markdownlint-cli
+      isMarkdownAgentic
     ];
   })
   (wrap "lefthook-markdownlint-agentic" nix-lefthook-markdownlint-agentic-src {

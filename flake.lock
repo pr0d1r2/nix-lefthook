@@ -256,6 +256,22 @@
         "type": "github"
       }
     },
+    "nix-lefthook-markdownlint-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784019148,
+        "narHash": "sha256-0HMKpn0V1GvU4gHn8Mx73yXG7akKefwRQsfIOSK3978=",
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-markdownlint",
+        "rev": "6db42287850a8bb7ffe7c92f70281fd0b909d754",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-markdownlint",
+        "type": "github"
+      }
+    },
     "nix-lefthook-missing-final-newline-src": {
       "flake": false,
       "locked": {
@@ -596,6 +612,7 @@
         "nix-lefthook-justfile-no-embedded-shell-src": "nix-lefthook-justfile-no-embedded-shell-src",
         "nix-lefthook-linter-coverage-full-src": "nix-lefthook-linter-coverage-full-src",
         "nix-lefthook-markdownlint-agentic-src": "nix-lefthook-markdownlint-agentic-src",
+        "nix-lefthook-markdownlint-src": "nix-lefthook-markdownlint-src",
         "nix-lefthook-missing-final-newline-src": "nix-lefthook-missing-final-newline-src",
         "nix-lefthook-narrow-language-src": "nix-lefthook-narrow-language-src",
         "nix-lefthook-nix-flake-check-src": "nix-lefthook-nix-flake-check-src",
