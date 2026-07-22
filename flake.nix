@@ -33,6 +33,10 @@
       fragments = [
         "base"
         "nix"
+        "shell"
+        "ascii"
+        "markdown"
+        "yaml"
       ];
     in
     {
