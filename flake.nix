@@ -98,7 +98,5 @@
           }/bin/confirm";
         };
       });
-
-      overlays.default = lefthookOverlay;
     };
 }
