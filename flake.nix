@@ -21,6 +21,7 @@
       ...
     }:
     let
+      sas = set-and-setting.inputs.set-and-setting;
       supportedSystems = [
         "aarch64-darwin"
         "x86_64-darwin"
@@ -41,16 +42,16 @@
     in
     {
       packages = forAllSystems (pkgs: {
-        setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
+        setting = (sas.lib.mkSetting { inherit pkgs; }).materialized;
       });
 
       devShells = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sas.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
         in
-        set-and-setting.lib.mkDevShells {
+        sas.lib.mkDevShells {
           inherit pkgs;
           basePackages = mat.packages;
           defaultShellHook = ''
@@ -62,12 +63,12 @@
 
       checks = forAllSystems (
         pkgs:
-        (set-and-setting.lib.checksFor {
+        (sas.lib.checksFor {
           inherit pkgs fragments;
           src = ./.;
         })
         // {
-          dep-graph = set-and-setting.lib.mkDepGraphCheck {
+          dep-graph = sas.lib.mkDepGraphCheck {
             inherit pkgs;
             projectRoot = ./.;
           };
@@ -78,7 +79,7 @@
       apps = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sas.lib.materializationFor { inherit pkgs fragments; };
         in
         {
           confirm = {
@@ -105,12 +106,12 @@
                       "@CONFIRM_REV@"
                     ]
                     [
-                      "${set-and-setting}/setting/integrations/lefthook"
-                      "${set-and-setting}/setting/lib/assemble-lefthook.sh"
-                      "${set-and-setting}/setting/lib/detect-fragments.sh"
+                      "${sas}/setting/integrations/lefthook"
+                      "${sas}/setting/lib/assemble-lefthook.sh"
+                      "${sas}/setting/lib/detect-fragments.sh"
                       "${self.packages.${pkgs.stdenv.hostPlatform.system}.setting}"
-                      "${set-and-setting}/lib/confirm.sh"
-                      (set-and-setting.rev or "unknown")
+                      "${sas}/lib/confirm.sh"
+                      (sas.rev or "unknown")
                     ]
                     (builtins.readFile ./scripts/confirm.sh);
               }
