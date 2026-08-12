@@ -152,7 +152,9 @@ in
       actionlint =
         let
           source = pkgs.lib.sources.sourceByRegex ./.. [ "^.github/workflows/.*" ];
-          wrapper = builtins.head (builtins.filter (w: w.name == "lefthook-actionlint") (lefthookWrappersFor pkgs));
+          wrapper = builtins.head (
+            builtins.filter (w: w.name == "lefthook-actionlint") (lefthookWrappersFor pkgs)
+          );
         in
         pkgs.runCommand "actionlint-check" { } ''
           cd ${source}
