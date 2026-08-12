@@ -141,9 +141,25 @@ in
   checks = forAllSystems (
     pkgs:
     (sas.lib.checksFor {
-      inherit pkgs fragments;
+      inherit pkgs;
+      fragments = builtins.filter (fragment: fragment != "actions") fragments;
       src = ./..;
     })
+    // {
+      # set-and-setting's actionlint check currently passes a scalar regex to
+      # nixpkgs' sourceByRegex, whose API requires a list of regexes. Keep the
+      # actions check enabled locally while supplying the correct API shape.
+      actionlint =
+        let
+          source = pkgs.lib.sources.sourceByRegex ./.. [ "^.github/workflows/.*" ];
+          wrapper = builtins.head (builtins.filter (w: w.name == "lefthook-actionlint") (lefthookWrappersFor pkgs));
+        in
+        pkgs.runCommand "actionlint-check" { } ''
+          cd ${source}
+          ${pkgs.lib.getExe wrapper} --check .github/workflows/*.yml .github/workflows/*.yaml
+          touch $out
+        '';
+    }
     // {
       dep-graph = sas.lib.mkDepGraphCheck {
         inherit pkgs;
