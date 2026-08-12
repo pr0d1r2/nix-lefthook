@@ -1,0 +1,21 @@
+exempt:
+  - class: ".editorconfig"
+    ticket: 329
+  - class: ".envrc"
+    ticket: 331
+  - class: "LICENSE"
+    ticket: 332
+  - class: "lock"
+    ticket: 335
+  - class: ".gitignore"
+    ticket: 328
+  - class: ".github/workflows"
+    ticket: 319
+  - class: "bats"
+    ticket: 320
+  - class: "toml"
+    ticket: 321
+  - class: "in"
+    ticket: 322
+  - class: "awk"
+    ticket: 327
