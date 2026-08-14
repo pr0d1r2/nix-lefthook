@@ -51,11 +51,11 @@
     "nix-lefthook-bats-failures-only-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1786442096,
-        "narHash": "sha256-Sfqf//N1C0TRDPZHs+mfPzlBM4nDJKD9acrwiMv0ytU=",
+        "lastModified": 1786671847,
+        "narHash": "sha256-wqRm+8nSuWuaLZfoW/YirfCYeZy0D0NDcPm3/biIw9g=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-bats-failures-only",
-        "rev": "23d50ace56e09d7d0b48a987e430a4adf96e6aac",
+        "rev": "8a31f0a2c576b7233760cba2ac679ed2df106454",
         "type": "github"
       },
       "original": {
@@ -339,11 +339,11 @@
     "nix-lefthook-git-no-local-paths-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1786445868,
-        "narHash": "sha256-tGbla6nwI5oEg4V+Qa+5fp58Asj24FlRNR2VR8XJGH4=",
+        "lastModified": 1786655859,
+        "narHash": "sha256-K32touMiRBVop4oBMhFmOxCpAsXxKx1lGQoMKyL0FIg=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-git-no-local-paths",
-        "rev": "b9022388b6e212ed05675e8f4bc72de04df08223",
+        "rev": "7e841fbc81fbd7b71e968823cce4413ffd3fa5f0",
         "type": "github"
       },
       "original": {
@@ -803,11 +803,11 @@
     "nix-lefthook-shfmt-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1786619622,
-        "narHash": "sha256-HsHn3F/qKRfh7JkFmmp5Is/Wkei2OVZgu6E9caHzUIA=",
+        "lastModified": 1786691840,
+        "narHash": "sha256-y3gBbe68Jv8xU9PcdlRw7lhy1otzI4lIXc/0fm7Pqpw=",
         "owner": "pr0d1r2",
         "repo": "nix-lefthook-shfmt",
-        "rev": "09899f83616a163f372cef5b79f3f29dfcc9157a",
+        "rev": "765a098fb10a272f374115a8007c70e65cb30bf5",
         "type": "github"
       },
       "original": {
@@ -1061,11 +1061,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1786598633,
-        "narHash": "sha256-B2C/UZr+s8VlGKv+RbR0ZUMwvkoKT2JuqOU//0UeRlc=",
+        "lastModified": 1786680652,
+        "narHash": "sha256-j4OUTdHUNBVps/EBOozbaVfYfUeJfIsWq13PYEptyOk=",
         "owner": "pr0d1r2",
         "repo": "nixpkgs-lock",
-        "rev": "3677ad2e70a64db8e5c91a83d5bbbad9f2fbc5f6",
+        "rev": "7e0b98f468cd36e3686edfff864d937b7621aaf0",
         "type": "github"
       },
       "original": {
