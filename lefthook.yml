@@ -2,6 +2,8 @@
 
 pre-commit:
   commands:
+    changelog-touched:
+      run: lefthook-changelog-touched
     gitleaks:
       run: lefthook-gitleaks {staged_files}
     git-conflict-markers:
@@ -14,6 +16,15 @@ pre-commit:
     actionlint:
       glob: ".github/workflows/*.{yml,yaml}"
       run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {staged_files}
+    shellcheck:
+      glob: "*.sh"
+      run: lefthook-shellcheck {staged_files}
+    shfmt:
+      glob: "*.sh"
+      run: lefthook-shfmt {staged_files}
+    no-shell-functions:
+      glob: "*.sh"
+      run: lefthook-no-shell-functions {staged_files}
     unicode-lint:
       glob: "*"
       exclude: '\.(gif|png|jpg|jpeg|ico|webp|bmp|tiff|pdf|woff2?|ttf|eot|mp[34]|wav|ogg|zip|gz|tar|iso)$'
@@ -27,6 +38,9 @@ pre-commit:
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {staged_files}
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {staged_files}
 
 pre-push:
   commands:
@@ -38,6 +52,23 @@ pre-push:
     actionlint:
       glob: ".github/workflows/*.{yml,yaml}"
       run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {push_files}
+    shellcheck:
+      glob: "*.sh"
+      run: lefthook-shellcheck {push_files}
+    shfmt:
+      glob: "*.sh"
+      run: lefthook-shfmt {push_files}
+    no-shell-functions:
+      glob: "*.sh"
+      run: lefthook-no-shell-functions {push_files}
+    bats-parse:
+      glob: "**/*.bats"
+      run: timeout ${LEFTHOOK_BATS_PARSE_TIMEOUT:-30} lefthook-bats-parse {push_files}
+    bats-unit:
+      glob: "**/*.bats"
+      run: timeout ${LEFTHOOK_BATS_UNIT_TIMEOUT:-300} lefthook-bats-unit
+    tdd-order-bats:
+      run: timeout ${LEFTHOOK_TDD_ORDER_TIMEOUT:-30} lefthook-tdd-order-bats
     markdownlint:
       glob: "*.md"
       run: timeout ${LEFTHOOK_MARKDOWNLINT_TIMEOUT:-30} lefthook-markdownlint {push_files}
@@ -47,3 +78,11 @@ pre-push:
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {push_files}
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {push_files}
+
+commit-msg:
+  commands:
+    commit-msg-lint:
+      run: lefthook-commit-msg-lint {1}
