@@ -130,7 +130,7 @@ in
     in
     sas.lib.mkDevShells {
       inherit pkgs;
-      basePackages = mat.packages;
+      basePackages = mat.packages ++ [ (lefthookFor pkgs) ];
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
