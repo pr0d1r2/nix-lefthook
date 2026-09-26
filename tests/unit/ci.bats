@@ -15,3 +15,8 @@ setup() {
     assert_success
     assert_output "2"
 }
+
+@test "CI declares the workflow_dispatch trigger used by the macOS job" {
+    run grep -E '^  workflow_dispatch:' .github/workflows/ci.yml
+    assert_success
+}
