@@ -127,9 +127,6 @@ in
     let
       mat = sas.lib.materializationFor { inherit pkgs fragments; };
       sys = pkgs.stdenv.hostPlatform.system;
-    in
-    sas.lib.mkDevShells {
-      inherit pkgs;
       basePackages = mat.packages ++ [
         (lefthookFor pkgs)
         pkgs.actionlint
@@ -138,6 +135,19 @@ in
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
       '';
+    in
+    (sas.lib.mkDevShells {
+      inherit pkgs basePackages defaultShellHook;
+    })
+    // {
+      ci = pkgs.mkShell {
+        packages = basePackages;
+        shellHook = ''
+          if [ -z "''${HOME:-}" ]; then export HOME=/tmp; fi
+          export LEFTHOOK_BATS_PARSE_TIMEOUT="''${LEFTHOOK_BATS_PARSE_TIMEOUT:-120}"
+          ${defaultShellHook}
+        '';
+      };
     }
   );
 
