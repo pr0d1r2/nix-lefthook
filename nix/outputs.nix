@@ -130,6 +130,7 @@ in
       basePackages = mat.packages ++ [
         (lefthookFor pkgs)
         pkgs.actionlint
+        pkgs.nix
       ];
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
