@@ -6,8 +6,13 @@ setup() {
 }
 
 @test "CI uses nix-lefthook-ci-action pinned to a full commit SHA" {
-    run grep -E 'pr0d1r2/nix-lefthook-ci-action@[0-9a-f]{40}' .github/workflows/ci.yml
+    run grep -E 'uses: pr0d1r2/nix-lefthook-ci-action@[0-9a-f]{40}$' .github/workflows/ci.yml
     assert_success
+}
+
+@test "CI has no unpinned nix-lefthook-ci-action references" {
+    run bash -c "grep -E 'uses: pr0d1r2/nix-lefthook-ci-action@' .github/workflows/ci.yml | grep -Ev '@[0-9a-f]{40}$'"
+    assert_failure
 }
 
 @test "CI pins both jobs to the same nix-lefthook-ci-action commit" {
