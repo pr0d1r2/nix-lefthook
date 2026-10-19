@@ -18,6 +18,7 @@ setup() {
 @test "CI pins both jobs to the same nix-lefthook-ci-action commit" {
     run grep -c 'pr0d1r2/nix-lefthook-ci-action@ce9a118b05e90e186dba48a82067adeed185f7d4' .github/workflows/ci.yml
     assert_success
+    assert_output "2"
 }
 
 @test "CI declares the workflow_dispatch trigger used by the macOS job" {
