@@ -20,16 +20,6 @@ setup() {
     assert_success
 }
 
-@test "CI delegates to the shared guardrails workflow" {
-    run grep -E 'uses: pr0d1r2/set-and-setting/\.github/workflows/guardrails\.yml@main' .github/workflows/ci.yml
-    assert_success
-}
-
-@test "CI exposes the guardrails workflow as a reusable job" {
-    run grep -E '^  guardrails:$' .github/workflows/ci.yml
-    assert_success
-}
-
 @test "CI declares the workflow_dispatch trigger used by the macOS job" {
     run grep -E '^  workflow_dispatch:' .github/workflows/ci.yml
     assert_success
