@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Documented the migration from per-hook `packages.<system>.default` inputs
+  to this flake's `lefthook-<name>` packages, including the removed
+  `nix-lefthook-bats-failures-only` follow.
+
 ## [2.1.8] - 2025-06-01
 
 ### Added

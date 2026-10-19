@@ -29,6 +29,25 @@ Add to your devShell:
 nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.default
 ```
 
+The per-hook repositories are source repositories for this flake, not the
+consumer-facing package API. After the hooks moved into this repository, use
+the wrapper packages here:
+
+```nix
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-bats-parse
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-editorconfig-checker
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-git-no-local-paths
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-justfile-alphabetical
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-markdownlint
+nix-lefthook.packages.${pkgs.stdenv.hostPlatform.system}.lefthook-yamllint
+```
+
+Do not use `inputs.nix-lefthook-<name>.packages.${system}.default`: those
+per-hook flakes now expose only their setting and retain no binary package.
+Likewise, remove obsolete `inputs.nix-lefthook-bats-failures-only` follows
+from `nix-lefthook-bats-changed`; the failures-only wrapper is provided by
+this flake as `lefthook-bats-failures-only`.
+
 ## Recommended lefthook.yml config
 
 Configure lefthook to only show output on failure:
