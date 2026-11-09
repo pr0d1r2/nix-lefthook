@@ -54,6 +54,7 @@ let
   lefthookFor = import ./lefthook-for.nix { inherit version; };
   lefthookOverlay = _final: _prev: { lefthook = lefthookFor _prev; };
   batsWithLibsFor = import ./bats-with-libs-for.nix;
+  wrapperChecksFor = pkgs: import ./checks-for.nix { inherit lefthookWrappersFor; } pkgs;
   lefthookWrappersFor = import ./lefthook-wrappers-for.nix {
     inherit
       batsWithLibsFor
@@ -103,6 +104,8 @@ let
     "ascii"
     "markdown"
     "yaml"
+    "bats"
+    "toml"
   ];
 in
 {
@@ -127,11 +130,17 @@ in
     let
       mat = sas.lib.materializationFor { inherit pkgs fragments; };
       sys = pkgs.stdenv.hostPlatform.system;
-      basePackages = mat.packages ++ [
-        (lefthookFor pkgs)
-        pkgs.actionlint
-        pkgs.nix
-      ];
+      # The materialized wrappers come first, so hooks run set-and-setting's
+      # versions; this flake's own wrappers follow, so its tests can run
+      # every wrapper it builds.
+      basePackages =
+        mat.packages
+        ++ [
+          (lefthookFor pkgs)
+          pkgs.actionlint
+          pkgs.nix
+        ]
+        ++ lefthookWrappersFor pkgs;
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
@@ -155,6 +164,8 @@ in
       fragments = builtins.filter (fragment: fragment != "actions") fragments;
       src = ./..;
     })
+    # Every wrapper this flake builds is executable and parses (bash -n).
+    // wrapperChecksFor pkgs
     // {
       # set-and-setting's actionlint check currently passes a scalar regex to
       # nixpkgs' sourceByRegex, whose API requires a list of regexes. Keep the

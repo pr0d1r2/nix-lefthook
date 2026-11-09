@@ -111,6 +111,9 @@ pre-commit:
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {staged_files}
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {staged_files}
 
 pre-push:
   commands:
@@ -189,6 +192,19 @@ pre-push:
     yamllint:
       glob: "*.{yml,yaml}"
       run: timeout ${LEFTHOOK_YAMLLINT_TIMEOUT:-30} lefthook-yamllint {push_files}
+    bats-parse:
+      glob: "**/*.bats"
+      run: timeout ${LEFTHOOK_BATS_PARSE_TIMEOUT:-30} lefthook-bats-parse {push_files}
+    bats-unit:
+      glob: "**/*.bats"
+      run: LEFTHOOK_BATS_UNIT_JOBS=1 timeout ${LEFTHOOK_BATS_UNIT_TIMEOUT:-300} lefthook-bats-unit
+    tdd-order-bats:
+      run: >-
+        LEFTHOOK_TDD_SPEC_DIR="${LEFTHOOK_TDD_SPEC_DIR:-$(git ls-files -- tests/unit/ | grep -qE '\.bats$' && printf tests/unit || printf tests)}"
+        timeout ${LEFTHOOK_TDD_ORDER_TIMEOUT:-30} lefthook-tdd-order-bats
+    taplo:
+      glob: "*.toml"
+      run: timeout ${LEFTHOOK_TAPLO_TIMEOUT:-30} lefthook-taplo {push_files}
 
 commit-msg:
   commands:
