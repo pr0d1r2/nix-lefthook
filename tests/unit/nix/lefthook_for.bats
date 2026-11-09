@@ -49,8 +49,8 @@ setup() {
     assert_failure
 }
 
-@test "flake.nix imports nix/lefthook-for.nix" {
-    run grep 'import ./nix/lefthook-for.nix' flake.nix
+@test "nix/outputs.nix imports nix/lefthook-for.nix" {
+    run grep 'import ./lefthook-for.nix' nix/outputs.nix
     assert_success
 }
 

@@ -64,8 +64,8 @@ setup() {
     assert_success
 }
 
-@test "flake.nix imports nix/lefthook-wrappers-for.nix" {
-    run grep 'import ./nix/lefthook-wrappers-for.nix' flake.nix
+@test "nix/outputs.nix imports nix/lefthook-wrappers-for.nix" {
+    run grep 'import ./lefthook-wrappers-for.nix' nix/outputs.nix
     assert_success
 }
 

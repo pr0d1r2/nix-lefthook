@@ -33,11 +33,34 @@ setup() {
     assert_output "0"
 }
 
-@test "lefthook.yml runs the nix linters restored by the set-and-setting bump" {
-    for hook in nixfmt statix deadnix shellcheck shfmt; do
-        run grep -q "lefthook-$hook" lefthook.yml
+# Succeeds when STAGE defines command HOOK and its run line calls
+# lefthook-HOOK. The run line may be folded (`run: >`) onto the next lines.
+stage_runs_hook='
+  /^[a-z-]+:$/ { in_stage = ($0 == stage ":"); in_cmd = 0; next }
+  in_stage && /^    [a-z0-9-]+:$/ { in_cmd = ($0 == "    " hook ":"); next }
+  in_stage && in_cmd && index($0, "lefthook-" hook) { found = 1 }
+  END { exit !found }
+'
+
+@test "both hook stages run the linters restored by the set-and-setting bump" {
+    for stage in pre-commit pre-push; do
+        for hook in nixfmt statix deadnix shellcheck shfmt taplo; do
+            run awk -v stage="$stage" -v hook="$hook" "$stage_runs_hook" lefthook.yml
+            assert_success
+        done
+    done
+}
+
+@test "pre-push runs the bats gates" {
+    for hook in bats-parse bats-unit tdd-order-bats; do
+        run awk -v stage=pre-push -v hook="$hook" "$stage_runs_hook" lefthook.yml
         assert_success
     done
+}
+
+@test "the stage check fails for a hook a stage does not define" {
+    run awk -v stage=pre-commit -v hook=bats-unit "$stage_runs_hook" lefthook.yml
+    assert_failure
 }
 
 @test "flake defines the lefthook-yml-generated check" {

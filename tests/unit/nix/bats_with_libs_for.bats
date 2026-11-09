@@ -39,8 +39,8 @@ setup() {
     assert_failure
 }
 
-@test "flake.nix imports nix/bats-with-libs-for.nix" {
-    run grep 'import ./nix/bats-with-libs-for.nix' flake.nix
+@test "nix/outputs.nix imports nix/bats-with-libs-for.nix" {
+    run grep 'import ./bats-with-libs-for.nix' nix/outputs.nix
     assert_success
 }
 

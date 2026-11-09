@@ -49,17 +49,27 @@ setup() {
     assert_success
 }
 
-@test "flake.nix imports nix/checks-for.nix" {
-    run grep 'import ./nix/checks-for.nix' flake.nix
+@test "nix/outputs.nix imports nix/checks-for.nix" {
+    run grep 'import ./checks-for.nix' nix/outputs.nix
     assert_success
 }
 
-@test "flake.nix defines checks output" {
-    run grep 'checks' flake.nix
+@test "nix/outputs.nix defines checks output" {
+    run grep -E '^  checks = ' nix/outputs.nix
     assert_success
 }
 
 @test ".envrc watches nix/checks-for.nix" {
     run grep 'watch_file nix/checks-for.nix' .envrc
+    assert_success
+}
+
+@test "flake.nix delegates outputs to nix/outputs.nix" {
+    run grep -F 'outputs = inputs: import ./nix/outputs.nix inputs;' flake.nix
+    assert_success
+}
+
+@test "nix/outputs.nix merges the wrappers check into checks" {
+    run grep -F '// wrapperChecksFor pkgs' nix/outputs.nix
     assert_success
 }
