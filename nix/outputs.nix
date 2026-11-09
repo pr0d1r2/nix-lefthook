@@ -143,11 +143,7 @@ in
     // {
       ci = pkgs.mkShell {
         packages = basePackages;
-        shellHook = ''
-          if [ -z "''${HOME:-}" ]; then export HOME=/tmp; fi
-          export LEFTHOOK_BATS_PARSE_TIMEOUT="''${LEFTHOOK_BATS_PARSE_TIMEOUT:-120}"
-          ${defaultShellHook}
-        '';
+        shellHook = builtins.readFile ../scripts/ci-shell-hook.sh + defaultShellHook;
       };
     }
   );

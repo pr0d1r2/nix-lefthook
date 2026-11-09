@@ -8,6 +8,11 @@ name: CI
     branches: [main]
   workflow_dispatch:
 
+# The flake has over 30 GitHub inputs. Unauthenticated fetches hit the
+# GitHub API rate limit, and the pinned CI action does not add a token.
+env:
+  NIX_CONFIG: "access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}"
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
