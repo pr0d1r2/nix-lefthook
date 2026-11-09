@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Satisfied the guardrails that set-and-setting 58f87fb adds, ahead of
+  the pin bump: CI authenticates Nix to GitHub through `NIX_CONFIG`; the
+  `ci` devShell hook moved to `scripts/ci-shell-hook.sh`; `.envrc` watches
+  `scripts/confirm.sh` and `scripts/ci-shell-hook.sh`; the README carries a
+  NixOS 26.05 badge plus architecture and development architecture
+  diagrams.
 - Documented the migration from per-hook `packages.<system>.default` inputs
   to this flake's `lefthook-<name>` packages, including the removed
   `nix-lefthook-bats-failures-only` follow.

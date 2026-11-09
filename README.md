@@ -1,12 +1,44 @@
 # nix-lefthook
 
-[![CI](https://github.com/pr0d1r2/nix-lefthook/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/nix-lefthook/actions/workflows/ci.yml)
+[![CI](https://github.com/pr0d1r2/nix-lefthook/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/nix-lefthook/actions/workflows/ci.yml) [![NixOS 26.05](https://img.shields.io/badge/NixOS-26.05-blue.svg?logo=nixos)](https://nixos.org)
 
 > This code is LLM-generated and validated through an automated integration process using [lefthook](https://github.com/evilmartians/lefthook) git hooks, [bats](https://github.com/bats-core/bats-core) unit tests, and GitHub Actions CI.
 
 Pinned [lefthook](https://github.com/evilmartians/lefthook) binary packaged as a Nix flake. Single source of truth for lefthook version across all repos.
 
 **Current version:** 2.1.8
+
+## Architecture
+
+```mermaid
+flowchart LR
+  lefthookSrc["evilmartians/lefthook source"] --> lefthook["packages.default<br/>lefthook 2.1.8"]
+  hookSrcs["nix-lefthook-* hook sources<br/>(flake = false inputs)"] --> wrappers["packages.lefthook-&lt;name&gt;<br/>hook wrappers"]
+  sas["set-and-setting"] --> setting["packages.setting<br/>materialized configs"]
+  lefthook --> shells["devShells.default / devShells.ci"]
+  wrappers --> shells
+  setting --> shells
+  shells -->|inputsFrom| consumers["consumer flakes"]
+  lefthook -->|package input| consumers
+  wrappers -->|package input| consumers
+```
+
+Consumers either add the packages to their own devShell or inherit
+`devShells.ci` through `inputsFrom`. Inheriting the shell also inherits
+its hook, which writes this repository's generated `lefthook.yml`,
+`.markdownlint.yml` and `.yamllint.yml` into the consumer's checkout.
+
+## Development architecture
+
+```mermaid
+flowchart TD
+  enter["nix develop / direnv"] --> hook["shellHook:<br/>sync-setting, copy lefthook.yml"]
+  hook --> install["lefthook install"]
+  install --> commit["pre-commit: lint staged files"]
+  install --> push["pre-push: bats-parse, bats-unit,<br/>tdd-order-bats, nix flake check"]
+  push --> checks["nix flake check:<br/>set-and-setting checks + repo checks"]
+  checks --> ci["CI: nix-lefthook-ci-action<br/>ubuntu-latest; macos-latest on push"]
+```
 
 ## Why
 
