@@ -45,6 +45,16 @@ setup() {
     assert_success
 }
 
+@test ".envrc watches scripts/confirm.sh for changes" {
+    run grep -q '^watch_file scripts/confirm\.sh$' .envrc
+    assert_success
+}
+
+@test ".envrc watches scripts/ci-shell-hook.sh for changes" {
+    run grep -q '^watch_file scripts/ci-shell-hook\.sh$' .envrc
+    assert_success
+}
+
 @test ".envrc uses flake" {
     run grep -q '^use flake$' .envrc
     assert_success

@@ -25,3 +25,8 @@ setup() {
     run grep -E '^  workflow_dispatch:' .github/workflows/ci.yml
     assert_success
 }
+
+@test "CI authenticates Nix to GitHub at workflow level" {
+    run grep -E '^  NIX_CONFIG: "access-tokens = github\.com=\$\{\{ secrets\.GITHUB_TOKEN \}\}"$' .github/workflows/ci.yml
+    assert_success
+}
