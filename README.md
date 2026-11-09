@@ -37,7 +37,7 @@ flowchart TD
   install --> commit["pre-commit: lint staged files"]
   install --> push["pre-push: bats-parse, bats-unit,<br/>tdd-order-bats, nix flake check"]
   push --> checks["nix flake check:<br/>set-and-setting checks + repo checks"]
-  checks --> ci["CI: nix-lefthook-ci-action<br/>ubuntu-latest; macos-latest on push"]
+  checks --> ci["CI: nix-lefthook-ci-action<br/>ubuntu-latest; macos-latest on push<br/>and workflow_dispatch"]
 ```
 
 ## Why
