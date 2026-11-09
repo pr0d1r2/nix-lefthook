@@ -173,6 +173,16 @@ in
         '';
     }
     // {
+      # The devShell copies the generated lefthook.yml over the tracked one
+      # on every entry. Fail when they differ, so the committed file is
+      # always the one hooks and CI actually run.
+      lefthook-yml-generated =
+        let
+          mat = sas.lib.materializationFor { inherit pkgs fragments; };
+        in
+        pkgs.runCommand "lefthook-yml-generated-check" {
+          nativeBuildInputs = [ pkgs.diffutils ];
+        } "diff -u ${../lefthook.yml} ${mat.files}/lefthook.yml && touch $out";
       dep-graph = sas.lib.mkDepGraphCheck {
         inherit pkgs;
         projectRoot = ./..;
