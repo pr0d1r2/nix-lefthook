@@ -3,7 +3,7 @@
 setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
-    HOOK="$BATS_TEST_DIRNAME/../../../scripts/ci-shell-hook.sh"
+    HOOK="$BATS_TEST_DIRNAME/../../scripts/ci-shell-hook.sh"
 }
 
 @test "sets HOME to /tmp when HOME is empty" {
@@ -43,6 +43,6 @@ setup() {
 }
 
 @test "the ci devShell reads its hook from scripts/ci-shell-hook.sh" {
-    run grep -F 'builtins.readFile ../scripts/ci-shell-hook.sh' "$BATS_TEST_DIRNAME/../../../nix/outputs.nix"
+    run grep -F 'builtins.readFile ../scripts/ci-shell-hook.sh' "$BATS_TEST_DIRNAME/../../nix/outputs.nix"
     assert_success
 }
