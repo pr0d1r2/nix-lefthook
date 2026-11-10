@@ -133,14 +133,16 @@ in
       # The materialized wrappers come first, so hooks run set-and-setting's
       # versions; this flake's own wrappers follow, so its tests can run
       # every wrapper it builds.
+      localWrappers = map (wrapper: self.packages.${sys}.${wrapper.name}) (lefthookWrappersFor pkgs);
       basePackages =
+        assert builtins.hasAttr "lefthook-bats-unit" self.packages.${sys};
         mat.packages
         ++ [
           (lefthookFor pkgs)
           pkgs.actionlint
           pkgs.nix
         ]
-        ++ lefthookWrappersFor pkgs;
+        ++ localWrappers;
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
