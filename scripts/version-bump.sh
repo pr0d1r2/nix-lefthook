@@ -5,8 +5,12 @@ NEW_VERSION="${1:?Usage: bash scripts/version-bump.sh <new-version>}"
 
 echo "Bumping lefthook to v${NEW_VERSION}..."
 
-sed "s/version = \".*\";/version = \"${NEW_VERSION}\";/" flake.nix >flake.nix.tmp && mv flake.nix.tmp flake.nix
-echo "Updated version to ${NEW_VERSION} in flake.nix"
+if ! grep -q '^  version = ".*";$' nix/outputs.nix; then
+  echo "version-bump: no version line in nix/outputs.nix" >&2
+  exit 1
+fi
+sed "s/^  version = \".*\";/  version = \"${NEW_VERSION}\";/" nix/outputs.nix >nix/outputs.nix.tmp && mv nix/outputs.nix.tmp nix/outputs.nix
+echo "Updated version to ${NEW_VERSION} in nix/outputs.nix"
 
 echo "Fetching source hash for v${NEW_VERSION}..."
 RAW_HASH=$(nix-prefetch-url --unpack --type sha256 \

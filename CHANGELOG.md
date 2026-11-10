@@ -8,13 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- Bumped `set-and-setting` from 35f73c3 to 58f87fb. The devShell writes
+- Bumped `set-and-setting` from 35f73c3 to a980e77. The devShell writes
   the generated `lefthook.yml` into every consumer that inherits
   `devShells.ci`; the old pin generated a config without nixfmt, statix,
   deadnix, shellcheck or shfmt. The tracked `lefthook.yml` is now the
   generated one, and `checks.lefthook-yml-generated` fails when they
   differ. `tests/unit/lefthook_yml.bats` drops seven assertions about the
   former hand-written file that the tracked file had not met.
+  The `bats` and `toml` fragments are back on, so pre-push runs
+  `bats-parse`, `bats-unit` and `tdd-order-bats` and both stages run
+  `taplo`; `checks` again includes the wrapper check (every wrapper is
+  executable and parses).
+- `scripts/version-bump.sh` edits the version in `nix/outputs.nix`, where
+  it now lives, and fails when that file has no version line. It used to
+  edit `flake.nix`, so a bump wrote the new hashes and kept the old
+  version.
 - Satisfied the guardrails that set-and-setting 58f87fb adds, ahead of
   the pin bump: CI authenticates Nix to GitHub through `NIX_CONFIG`; the
   `ci` devShell's environment setup (the `HOME` fallback and the
