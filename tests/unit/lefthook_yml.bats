@@ -34,11 +34,12 @@ setup() {
 }
 
 # Succeeds when STAGE defines command HOOK and its run line calls
-# lefthook-HOOK. The run line may be folded (`run: >`) onto the next lines.
+# lefthook-HOOK as a whole word, outside a comment. The run line may be
+# folded (`run: >`) onto the next lines.
 stage_runs_hook='
   /^[a-z-]+:$/ { in_stage = ($0 == stage ":"); in_cmd = 0; next }
   in_stage && /^    [a-z0-9-]+:$/ { in_cmd = ($0 == "    " hook ":"); next }
-  in_stage && in_cmd && index($0, "lefthook-" hook) { found = 1 }
+  in_stage && in_cmd && $0 !~ /^ *#/ && $0 ~ ("lefthook-" hook "([^a-z0-9-]|$)") { found = 1 }
   END { exit !found }
 '
 
@@ -60,6 +61,12 @@ stage_runs_hook='
 
 @test "the stage check fails for a hook a stage does not define" {
     run awk -v stage=pre-commit -v hook=bats-unit "$stage_runs_hook" lefthook.yml
+    assert_failure
+}
+
+@test "the stage check ignores comments and longer hook names" {
+    printf 'pre-commit:\n  commands:\n    taplo:\n      # run: lefthook-taplo\n      run: lefthook-taplo-extra {staged_files}\n' >"$BATS_TEST_TMPDIR/lefthook.yml"
+    run awk -v stage=pre-commit -v hook=taplo "$stage_runs_hook" "$BATS_TEST_TMPDIR/lefthook.yml"
     assert_failure
 }
 

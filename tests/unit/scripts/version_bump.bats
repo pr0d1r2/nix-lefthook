@@ -30,8 +30,8 @@ setup() {
   assert_success
 }
 
-@test "scripts/version-bump.sh updates version in flake.nix" {
-  run grep -E 'version.*flake\.nix' scripts/version-bump.sh
+@test "scripts/version-bump.sh updates version in nix/outputs.nix" {
+  run grep -E 'version.*nix/outputs\.nix' scripts/version-bump.sh
   assert_success
 }
 
@@ -70,10 +70,10 @@ setup() {
   assert_failure
 }
 
-@test "scripts/version-bump.sh correctly updates version in mock flake.nix" {
+@test "scripts/version-bump.sh correctly updates version in mock nix/outputs.nix" {
   MOCK_DIR="$(mktemp -d)"
-  printf '      version = "1.0.0";\n' >"$MOCK_DIR/flake.nix"
   mkdir -p "$MOCK_DIR/nix"
+  printf '  version = "1.0.0";\n' >"$MOCK_DIR/nix/outputs.nix"
   cat >"$MOCK_DIR/nix/lefthook-for.nix" <<'NIX'
     hash = "sha256-OldSourceHash000000000000000000000000000000=";
     vendorHash = "sha256-OldVendorHash000000000000000000000000000000=";
@@ -95,15 +95,15 @@ SH
   pushd "$MOCK_DIR" >/dev/null
   PATH="$MOCK_DIR/bin:$PATH" bash version-bump.sh 2.0.0
   popd >/dev/null
-  run grep 'version = "2.0.0"' "$MOCK_DIR/flake.nix"
+  run grep 'version = "2.0.0"' "$MOCK_DIR/nix/outputs.nix"
   assert_success
   rm -rf "$MOCK_DIR"
 }
 
 @test "scripts/version-bump.sh correctly updates hash in mock lefthook-for.nix" {
   MOCK_DIR="$(mktemp -d)"
-  printf '      version = "1.0.0";\n' >"$MOCK_DIR/flake.nix"
   mkdir -p "$MOCK_DIR/nix"
+  printf '  version = "1.0.0";\n' >"$MOCK_DIR/nix/outputs.nix"
   cat >"$MOCK_DIR/nix/lefthook-for.nix" <<'NIX'
     hash = "sha256-OldSourceHash000000000000000000000000000000=";
     vendorHash = "sha256-OldVendorHash000000000000000000000000000000=";
@@ -132,8 +132,8 @@ SH
 
 @test "scripts/version-bump.sh correctly updates vendorHash in mock lefthook-for.nix" {
   MOCK_DIR="$(mktemp -d)"
-  printf '      version = "1.0.0";\n' >"$MOCK_DIR/flake.nix"
   mkdir -p "$MOCK_DIR/nix"
+  printf '  version = "1.0.0";\n' >"$MOCK_DIR/nix/outputs.nix"
   cat >"$MOCK_DIR/nix/lefthook-for.nix" <<'NIX'
     hash = "sha256-OldSourceHash000000000000000000000000000000=";
     vendorHash = "sha256-OldVendorHash000000000000000000000000000000=";
@@ -156,6 +156,24 @@ SH
   PATH="$MOCK_DIR/bin:$PATH" bash version-bump.sh 2.0.0
   popd >/dev/null
   run grep 'sha256-NewVendorHash' "$MOCK_DIR/nix/lefthook-for.nix"
+  assert_success
+  rm -rf "$MOCK_DIR"
+}
+
+@test "scripts/version-bump.sh fails when nix/outputs.nix has no version line" {
+  MOCK_DIR="$(mktemp -d)"
+  mkdir -p "$MOCK_DIR/nix" "$MOCK_DIR/bin"
+  printf '{ }\n' >"$MOCK_DIR/nix/outputs.nix"
+  printf '    hash = "sha256-OldSourceHash000000000000000000000000000000=";\n' >"$MOCK_DIR/nix/lefthook-for.nix"
+  printf '#!/usr/bin/env bash\nexit 99\n' >"$MOCK_DIR/bin/nix-prefetch-url"
+  chmod +x "$MOCK_DIR/bin/nix-prefetch-url"
+  cp scripts/version-bump.sh "$MOCK_DIR/"
+  pushd "$MOCK_DIR" >/dev/null
+  PATH="$MOCK_DIR/bin:$PATH" run bash version-bump.sh 2.0.0
+  popd >/dev/null
+  assert_failure
+  assert_output --partial "no version line in nix/outputs.nix"
+  run grep 'OldSourceHash' "$MOCK_DIR/nix/lefthook-for.nix"
   assert_success
   rm -rf "$MOCK_DIR"
 }
