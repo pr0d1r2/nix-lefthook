@@ -129,6 +129,10 @@ in
     pkgs:
     let
       mat = sas.lib.materializationFor { inherit pkgs fragments; };
+      lefthookFiles = pkgs.runCommand "lefthook-materialized-files" { } ''
+        cp -R --no-preserve=mode ${mat.files} $out
+        sed -i '/LEFTHOOK_TDD_SPEC_DIR=/d' $out/lefthook.yml
+      '';
       sys = pkgs.stdenv.hostPlatform.system;
       # The materialized wrappers come first, so hooks run set-and-setting's
       # versions; this flake's own wrappers follow, so its tests can run
@@ -145,7 +149,7 @@ in
         ++ localWrappers;
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
-        cp -f ${mat.files}/lefthook.yml lefthook.yml
+        cp -f ${lefthookFiles}/lefthook.yml lefthook.yml
       '';
     in
     (sas.lib.mkDevShells {
@@ -192,10 +196,14 @@ in
       lefthook-yml-generated =
         let
           mat = sas.lib.materializationFor { inherit pkgs fragments; };
+          lefthookFiles = pkgs.runCommand "lefthook-materialized-files" { } ''
+            cp -R --no-preserve=mode ${mat.files} $out
+            sed -i '/LEFTHOOK_TDD_SPEC_DIR=/d' $out/lefthook.yml
+          '';
         in
         pkgs.runCommand "lefthook-yml-generated-check" {
           nativeBuildInputs = [ pkgs.diffutils ];
-        } "diff -u ${../lefthook.yml} ${mat.files}/lefthook.yml && touch $out";
+        } "diff -u ${../lefthook.yml} ${lefthookFiles}/lefthook.yml && touch $out";
       dep-graph = sas.lib.mkDepGraphCheck {
         inherit pkgs;
         projectRoot = ./..;
