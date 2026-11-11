@@ -46,3 +46,8 @@ setup() {
     run grep -F 'builtins.readFile ../scripts/ci-shell-hook.sh' "$BATS_TEST_DIRNAME/../../nix/outputs.nix"
     assert_success
 }
+
+@test "the ci devShell includes bats with its helper libraries" {
+    run grep -F '(batsWithLibsFor pkgs)' "$BATS_TEST_DIRNAME/../../nix/outputs.nix"
+    assert_success
+}

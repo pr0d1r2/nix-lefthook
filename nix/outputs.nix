@@ -142,6 +142,7 @@ in
         assert builtins.hasAttr "lefthook-bats-unit" self.packages.${sys};
         mat.packages
         ++ [
+          (batsWithLibsFor pkgs)
           (lefthookFor pkgs)
           pkgs.actionlint
           pkgs.nix
