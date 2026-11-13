@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Refreshed nixpkgs and made `set-and-setting` follow the repository lock so
+  all nixpkgs consumers receive brotli 1.2.1 (CVE-2026-111497). Ruby 3.4.11
+  remains deferred until the nixos-26.05 backport of 3.4.12 lands.
 - Bumped `set-and-setting` from 35f73c3 to a980e77. The devShell writes
   the generated `lefthook.yml` into every consumer that inherits
   `devShells.ci`; the old pin generated a config without nixfmt, statix,
