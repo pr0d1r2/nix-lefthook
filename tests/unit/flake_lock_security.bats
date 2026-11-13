@@ -6,7 +6,7 @@ setup() {
 }
 
 @test "set-and-setting follows the repository nixpkgs lock" {
-    run nix eval --raw --impure --expr '
+    run env HOME= nix eval --raw --impure --expr '
       let
         lock = builtins.fromJSON (builtins.readFile ./flake.lock);
         root = lock.nodes.${lock.root};
@@ -21,7 +21,7 @@ setup() {
 }
 
 @test "the locked nixpkgs provides a fixed brotli" {
-    run nix eval --raw --impure --expr '
+    run env HOME= nix eval --raw --impure --expr '
       (builtins.getFlake (toString ./.)).inputs.nixpkgs.legacyPackages.aarch64-darwin.brotli.version
     '
     assert_success
